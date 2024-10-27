@@ -28,7 +28,7 @@ headers = {
 }
 
 
-for page in range(1, (LAST_PAGE+1)):
+for page in range(1, LAST_PAGE):
     response = requests.get(
         url=url.format(page=page),
         headers=headers,
@@ -40,8 +40,8 @@ for page in range(1, (LAST_PAGE+1)):
         link = search_result.find('a')['href']
         title, category, location, date_str = [x for x in search_result.stripped_strings]
         date_obj = datetime.strptime(date_str, '%m/%d/%y')
-        date = date_obj.strftime("%a, %d %b %Y 12:00:00 GMT")
-        POSTS[link] = Post(link, title, date)
+        if not link in POSTS:
+            POSTS[link] = Post(link, title, date)
 
 STREAM = sorted([POSTS[key] for key in POSTS.keys()], key=lambda x: x.date, reverse=True)
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
             r"""<language>en-us</language>""",
             r"""<pubDate>"""+NOW.strftime("%a, %d %b %Y %H:%M:%S GMT")+r"""</pubDate>""",
             r"""<lastBuildDate>"""+NOW.strftime("%a, %d %b %Y %H:%M:%S GMT")+r"""</lastBuildDate>""",
-            "\n".join([r"""<item><title><![CDATA["""+x.title+r"""]]></title><link>"""+x.link+r"""</link><pubDate>"""+x.date+r"""</pubDate></item>""" for x in STREAM]),
+            "\n".join([r"""<item><title><![CDATA["""+x.title+r"""]]></title><link>"""+x.link+r"""</link><pubDate>"""+x.date.strftime("%a, %d %b %Y 12:00:00 GMT")+r"""</pubDate></item>""" for x in STREAM]),
             r"""</channel>""",
             r"""</rss>""",
     ])
