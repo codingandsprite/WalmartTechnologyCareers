@@ -39,7 +39,7 @@ for page in range(1, LAST_PAGE):
     for search_result in search_results:
         link = search_result.find('a')['href']
         title, category, location, date_str = [x for x in search_result.stripped_strings]
-        date_obj = datetime.strptime(date_str, '%m/%d/%y')
+        date = datetime.strptime(date_str, '%m/%d/%y')
         if not (link in POSTS.keys()):
             POSTS[link] = Post(link, title, date)
 
