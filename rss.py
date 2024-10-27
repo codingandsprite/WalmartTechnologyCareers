@@ -40,7 +40,7 @@ for page in range(1, LAST_PAGE):
         link = search_result.find('a')['href']
         title, category, location, date_str = [x for x in search_result.stripped_strings]
         date_obj = datetime.strptime(date_str, '%m/%d/%y')
-        if not link in POSTS:
+        if not (link in POSTS.keys()):
             POSTS[link] = Post(link, title, date)
 
 STREAM = sorted([POSTS[key] for key in POSTS.keys()], key=lambda x: x.date, reverse=True)
